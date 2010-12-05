@@ -24,15 +24,15 @@ class AlbumInfo
 	end
 	def findExistingID
 		@@existingAlbums.each do |album|
-			if album.title = @item
+			if album.title == @item
 				return album.id
 			end
 		end
+		return nil
 	end
 	def rawPrint
 		puts "."
 		puts @picasaID
-		puts @item
 	end
 	def print
 		puts "_____________________________"
