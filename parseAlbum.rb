@@ -4,16 +4,7 @@ require "rubygems"
 require "php_serialize"
 require "go_picasa_go"
 require "theuser.rb"
-
-def get_file_as_string(filename)
-  data = ''
-  f = File.open(filename, "r") 
-  f.each_line do |line|
-    data += line.gsub(";s:4:\"type\";", ";s:9:\"extension\";");
-  end
-  return data
-end
-
+require "getFileAsString.rb"
 
 class AlbumInfo
 	@@user = Theuser.new
@@ -50,15 +41,18 @@ class AlbumInfo
 
 end
 
-toDeserialize = get_file_as_string(ARGV[0])
-out = PHP.unserialize(toDeserialize)
+class AlbumParser
+	def initialize(albumFile)
+		toDeserialize = get_file_as_string(ARGV[0])
+		out = PHP.unserialize(toDeserialize)
 
-out.each do |item|
-	album = AlbumInfo.new(item)
-	album.rawPrint
-	puts "__________"
-	#album.rawPrint
-#	album.addtoPicasa
+		out.each do |item|
+			album = AlbumInfo.new(item)
+			album.rawPrint
+			puts "__________"
+			#album.addtoPicasa
+		end
+	end
 end
 
 

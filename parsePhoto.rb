@@ -3,15 +3,6 @@
 require "rubygems"
 require "php_serialize"
 
-def get_file_as_string(filename)
-  data = ''
-  f = File.open(filename, "r") 
-  f.each_line do |line|
-    data += line.gsub(";s:4:\"type\";", ";s:9:\"extension\";");
-  end
-  return data
-end
-
 class PhotoInfo
 	def initialize(galleryItem)
 		@item = galleryItem
@@ -31,14 +22,19 @@ class PhotoInfo
 	end
 end
 
-toDeserialize = get_file_as_string(ARGV[0])
-out = PHP.unserialize(toDeserialize)
+class PhotoParser
+	def initialize(photosDat)
+		@toDeserialize = get_file_as_string(photosDat)
+	end
+	def parse()
+		out = PHP.unserialize(@toDeserialize)
 
-out.each do |item|
-	photo = PhotoInfo.new(item)
-	photo.print
-	photo.rawPrint
+		out.each do |item|
+			photo = PhotoInfo.new(item)
+			photo.print
+			photo.rawPrint
+		end
+	end
 end
-
 
 
