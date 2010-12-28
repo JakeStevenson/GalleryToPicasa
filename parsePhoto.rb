@@ -25,6 +25,7 @@ end
 class PhotoParser
 	def initialize(photosDat)
 		@toDeserialize = get_file_as_string(photosDat)
+		parse
 	end
 	def parse()
 		out = PHP.unserialize(@toDeserialize)
@@ -32,7 +33,6 @@ class PhotoParser
 		out.each do |item|
 			photo = PhotoInfo.new(item)
 			photo.print
-			photo.rawPrint
 		end
 	end
 end

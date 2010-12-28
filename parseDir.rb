@@ -13,7 +13,8 @@ Dir.chdir(ARGV[0])
 albumDirs = Dir['*/']
 albumDirs.each do |albumDir|
 	puts "Album: " + albumDir
-	gets
+	album = AlbumParser.new(ARGV[0] + albumDir, ARGV[0] + albumDir + 'album.dat')
+	STDIN.gets
 end
 
 

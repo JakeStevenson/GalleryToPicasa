@@ -5,25 +5,19 @@ require "php_serialize"
 require "go_picasa_go"
 require "theuser.rb"
 require "getFileAsString.rb"
+require "parsePhoto.rb"
 
 class AlbumInfo
 	@@user = Theuser.new
 	@@existingAlbums = @@user.albums
 	def initialize(galleryItem)
 		@item = galleryItem
-		@picasaID = findExistingID
-	end
-	def findExistingID
-		@@existingAlbums.each do |album|
-			if album.title == @item
-				return album.id
-			end
-		end
-		return nil
+		@title = galleryItem.fields["name"]
 	end
 	def rawPrint
 		puts "."
-		puts @picasaID
+		puts @item
+		puts @title
 	end
 	def print
 		puts "_____________________________"
@@ -31,27 +25,27 @@ class AlbumInfo
 	def addtoPicasa
 		picasaAlbum = Picasa::DefaultAlbum.new
 		picasaAlbum.user = @@user
-		picasaAlbum.title = @item
+		picasaAlbum.title = @title
 		picasaAlbum.access = 'private'
 		picasaAlbum.picasa_save!
 	end
-	def getPhotos
-	end
-
 
 end
 
 class AlbumParser
-	def initialize(albumFile)
-		toDeserialize = get_file_as_string(ARGV[0])
+	def initialize(albumFolder, albumFile)
+		@folder = albumFolder
+		puts albumFile
+		toDeserialize = get_file_as_string(albumFile)
 		out = PHP.unserialize(toDeserialize)
+		album = AlbumInfo.new(out)
+		#album.rawPrint
+		#album.addtoPicasa
+		processPhotos
+	end
 
-		out.each do |item|
-			album = AlbumInfo.new(item)
-			album.rawPrint
-			puts "__________"
-			#album.addtoPicasa
-		end
+	def processPhotos
+		processor = PhotoParser.new(@folder+'photos.dat')
 	end
 end
 
